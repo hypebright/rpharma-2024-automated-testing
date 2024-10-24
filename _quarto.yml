@@ -1,0 +1,4 @@
+project:
+  title: "Automated Testing"
+  type: website
+  output-dir: docs
