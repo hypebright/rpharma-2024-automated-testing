@@ -66,12 +66,64 @@ Writing tests is just the first step. You need to automate the testing process t
 
 # covr
 
+With `covr`, you can check the test coverage of your package. You can use the `covr` package to generate a test coverage report, which you can then use to improve your tests.
+
+* `covr::package_coverage()` generates a test coverage report
+* `covr::function_coverage()` calculates coverage for a specific function
+
+# Another additional step?!
+
+# 👋 Hello, GitHub Actions!
+
+# GitHub Actions
+
+With GitHub Actions, you can **automate** things ✨. You can create custom workflows that run every time you push changes to your repository. Handy!
+
+# GitHub Actions
+
+To run Actions, you create a `.github/workflows` directory in your repo In here, you create `.yml` files that define the workflows.
+
+You can have one big workflow file, or you can split it up into **multiple workflow files**.
+
+# GitHub Actions
+
+Two workflows files:
+
+* R-CMD-check: checks the package, which includes running tests
+* test-coverage: checks the test coverage
+
 # GitHub Actions
 
 Two workflows:
 
-* R-CMD-check: checks the package, which includes running tests
-* test-coverage: checks the test coverage
+* R-CMD-check: `usethis::use_github_action("check-standard", badge = TRUE)`
+* test-coverage: `usethis::use_github_action("test-coverage", badge = TRUE)`
+
+# GitHub Actions
+
+TODO: xplain what happens in de code
+
+# GitHub Actions
+
+TODO: add example of succeeded workflow
+
+# GitHub Actions
+
+TODO: add example of failed workflow
+
+# Results 👏
+
+* Forgetting to run tests is no excuse anymore
+* You automatically get notified when a test fails
+* You can always show QA that your code is X% covered by tests
+
+# Showing off your efforts 💪
+
+Badges. Show them off in your README. Bonus: remember the `badge = TRUE` argument in the `usethis::use_github_action()` function? This will automatically add the badge to your README!
+
+# Showing off your efforts 💪
+
+TODO: image of badges in repo
 
 # Want to learn more?
 
