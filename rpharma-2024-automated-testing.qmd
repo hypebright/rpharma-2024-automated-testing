@@ -54,6 +54,7 @@ Writing tests is just the first step. You need to automate the testing process t
 
 # What do you need?
 
+* An R package (see https://github.com/hypebright/RPharmaTest)
 * `testthat`
 * `shinytest2` in the case of a Shiny app
 * `covr` optionally, for checking test coverage
