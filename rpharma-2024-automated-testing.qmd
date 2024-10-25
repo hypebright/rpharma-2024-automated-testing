@@ -18,10 +18,11 @@ Ready for a 10-minute crash course on automated testing with GitHub Actions?! �
 
 # Why testing?
 
-![testing meme](images/testing-meme.jpg)
+![Smooth bike ride in a test env](images/testing_meme2.jpeg)
 
 # Why testing?
 
+* Production is a dangerous place 💀
 * Ensures code quality
 * Reduces bugs
 * Saves time
@@ -32,11 +33,11 @@ Ready for a 10-minute crash course on automated testing with GitHub Actions?! �
 You have developed an R package and you want to test it. You would typically:
 
 1. Write tests
-2. Run tests with `devtools::test()`
+2. Run tests with `devtools::test()` or `devtools::check()` or `testthat::test_check()`
 3. Fix bugs
 4. Repeat and push changes
 
-Harsh reality: you will either skip 2 because you're too busy, or you will simply forget 2 (and 3) before pushing changes. 😬
+**Harsh reality**: you will either skip 2 because you're too busy, or you will simply forget 2 (and 3) before pushing changes. 😬
 
 # How would you do it?
 
@@ -46,23 +47,178 @@ You have developed an Shiny app and you want to test it. You would typically:
 2. Fix bugs
 3. Repeat and push changes
 
-Harsh reality: you're manual testing will become so annoying that you will skip 1 and 2 before pushing changes. 😬
+**Harsh reality**: your manual testing will become so annoying that you will skip 1 and 2 before pushing changes. 😬
 
 # Work smarter, not harder!
 
-Writing tests is just the first step. You need to automate the testing process to ensure that tests are run every time you push changes. Write tests once, enjoy them forever!
+Writing tests is just the first step. You need to automate the testing process to ensure that tests are run every time you push changes. 
+
+<br>
+
+Write tests once, enjoy them forever! 🧡
 
 # What do you need?
 
 * An R package (see https://github.com/hypebright/RPharmaTest)
 * `testthat`
+* `usethis` to make your life easier
+* GitHub Actions for automating the testing process
 * `shinytest2` in the case of a Shiny app
 * `covr` optionally, for checking test coverage
-* GitHub Actions for automating the testing process
+
+# R package
+
+`R/take_break.R`
+
+```r
+#' Should you take a break?
+#'
+#' This function takes in three inputs and returns a logical value
+#' indicating whether you should take a break.
+#'
+#' @param weather A character string indicating the weather.
+#' @param time A numeric value indicating the time of day.
+#' @param workload A numeric value indicating the amount of work you have.
+#'
+#' @examples
+#' take_break(weather = "sunny", time = 10, workload = 3)
+#'
+#'
+#' @return A logical value indicating whether you should take a break.
+#'
+#' @export
+
+take_break <- function(weather, time, workload) {
+  # check if weather is accepted value
+  weather <- match.arg(weather, c("sunny", "cloudy", "rainy"))
+
+  # time should be between 0 and 24
+  if (time < 0 | time > 24) {
+    stop("time should be between 0 and 24")
+  }
+
+  # workload should be numeric
+  if (!is.numeric(workload)) {
+    stop("workload should be numeric")
+  }
+
+  # determine whether or not to take a break
+  if (weather == "sunny" & time > 10 & workload > 5) {
+    return(TRUE)
+  } else {
+    return(FALSE)
+  }
+}
+```
+
+# R package
+
+`inst/shiny/app.R`
+
+```r
+library(shiny)
+library(RPharmaTest)
+
+ui <- fluidPage(
+  titlePanel("Should You Take a Break?"),
+  selectInput("weather", "Weather:", choices = c("sunny", "cloudy", "rainy")),
+  numericInput("time", "Time of day (0-24):", value = 12, min = 0, max = 24),
+  numericInput("workload", "Workload (0-10):", value = 5),
+  textOutput("result")
+)
+
+server <- function(input, output) {
+  output$result <- renderText({
+    if (take_break(input$weather, input$time, input$workload)) {
+      "Yes, take a break!"
+    } else {
+      "No, keep working."
+    }
+  })
+}
+
+shinyApp(ui = ui, server = server)
+```
 
 # testthat
 
+The basic **unit tests**. You need:
+
+* testthat directory
+* testthat files
+* OR `usethis::use_testthat()` to create it all for you
+
+# testthat
+
+Project structure:
+
+```plaintext
+| tests
+|--- testthat.R
+|--- testthat
+|   |--- test-take_break.R
+```
+
+# testthat
+
+`tests/testthat/test-take_break.R`
+
+```r
+test_that("take_break returns correct values", {
+  # Should return TRUE when it's sunny, after 10 AM, and workload > 5
+  expect_true(take_break(weather = "sunny", time = 11, workload = 6))
+
+  # Should return FALSE for other conditions
+  expect_false(take_break(weather = "sunny", time = 9, workload = 6))
+  expect_false(take_break(weather = "cloudy", time = 11, workload = 6))
+  expect_false(take_break(weather = "sunny", time = 11, workload = 3))
+})
+
+test_that("take_break throws errors for invalid inputs", {
+  expect_error(take_break("stormy", 11, 6))
+  expect_error(take_break("sunny", -1, 6), "time should be between 0 and 24")
+  expect_error(take_break("sunny", 11, "a lot"), "workload should be numeric")
+})
+```
+
 # shinytest2
+
+Project structure:
+
+```plaintext
+| tests
+|--- testthat.R
+|--- testthat
+|   |--- test-take_break.R
+|   |--- test-shiny.R
+```
+
+# shinytest2
+
+`tests/testthat/test-shiny.R`
+
+```r
+library(shinytest2)
+
+test_that("Shiny app works as expected", {
+
+  # Don't run these tests on the CRAN build servers
+  skip_on_cran()
+
+  example_app <- system.file("shiny", package = "RPharmaTest")
+
+  app <- AppDriver$new(app_dir = example_app,
+                       name = "take-break-app")
+
+  # Test when break should be taken
+  app$set_inputs(weather = "sunny", time = 11, workload = 6)
+  app$expect_text("#result")
+
+  # Test when break should not be taken
+  app$set_inputs(weather = "sunny", time = 9, workload = 6)
+  app$expect_text("#result")
+})
+```
 
 # covr
 
@@ -71,7 +227,23 @@ With `covr`, you can check the test coverage of your package. You can use the `c
 * `covr::package_coverage()` generates a test coverage report
 * `covr::function_coverage()` calculates coverage for a specific function
 
+# covr
+
+While 100% test coverage is nice in theory, it's not going to be reality for most packages. However, you can use the test coverage report to identify areas where you can improve your tests.
+
+![Well look at that!](images/package_coverage.png)
+
+
 # Another additional step?!
+
+So we have to run:
+
+* `devtools::check()` OR
+* `testthat::test_check()` for R CMD checks (including running tests) AND
+* `covr::package_coverage()`
+
+Every time?!
+
 
 # 👋 Hello, GitHub Actions!
 
@@ -81,41 +253,167 @@ With GitHub Actions, you can **automate** things ✨. You can create custom work
 
 # GitHub Actions
 
-To run Actions, you create a `.github/workflows` directory in your repo In here, you create `.yml` files that define the workflows.
+To run Actions, you create a `.github/workflows` directory in your repo. In here, you create `.yaml` files that define the workflows.
 
 You can have one big workflow file, or you can split it up into **multiple workflow files**.
 
 # GitHub Actions
 
-Two workflows files:
+Two workflow files:
 
 * R-CMD-check: checks the package, which includes running tests
 * test-coverage: checks the test coverage
 
 # GitHub Actions
 
-Two workflows:
+Two workflows files:
 
 * R-CMD-check: `usethis::use_github_action("check-standard", badge = TRUE)`
 * test-coverage: `usethis::use_github_action("test-coverage", badge = TRUE)`
 
 # GitHub Actions
 
-TODO: xplain what happens in de code
+`.github/workflows/R-CMD-CHECK.yaml`
+
+```yaml
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+name: R-CMD-check.yaml
+
+permissions: read-all
+
+jobs:
+  R-CMD-check:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: macos-latest,   r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-latest,   r: 'release'}
+          - {os: ubuntu-latest,   r: 'oldrel-1'}
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          upload-snapshots: true
+          build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
+```
+
 
 # GitHub Actions
 
-TODO: add example of succeeded workflow
+`.github/workflows/test-coverage.yaml`
+
+```yaml
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+name: test-coverage.yaml
+
+permissions: read-all
+
+jobs:
+  test-coverage:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::covr, any::xml2
+          needs: coverage
+
+      - name: Test coverage
+        run: |
+          cov <- covr::package_coverage(
+            quiet = FALSE,
+            clean = FALSE,
+            install_path = file.path(normalizePath(Sys.getenv("RUNNER_TEMP"), winslash = "/"), "package")
+          )
+          covr::to_cobertura(cov)
+        shell: Rscript {0}
+
+      - uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: ${{ github.event_name != 'pull_request' && true || false }}
+          file: ./cobertura.xml
+          plugin: noop
+          disable_search: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Show testthat output
+        if: always()
+        run: |
+          ## --------------------------------------------------------------------
+          find '${{ runner.temp }}/package' -name 'testthat.Rout*' -exec cat '{}' \; || true
+        shell: bash
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-test-failures
+          path: ${{ runner.temp }}/package
+```
 
 # GitHub Actions
 
-TODO: add example of failed workflow
+Every time you push changes to your repository, the workflows will run. You can see the results in the Actions tab in your repository.
 
-# Results 👏
+<br>
 
-* Forgetting to run tests is no excuse anymore
-* You automatically get notified when a test fails
-* You can always show QA that your code is X% covered by tests
+And it can be a pass, or a fail... 🚦
+
+# GitHub Actions
+
+![Yay](images/github_actions_pass.png)
+
+# GitHub Actions
+
+![Oops](images/github_actions_fail.png)
 
 # Showing off your efforts 💪
 
@@ -123,7 +421,13 @@ Badges. Show them off in your README. Bonus: remember the `badge = TRUE` argumen
 
 # Showing off your efforts 💪
 
-TODO: image of badges in repo
+![](images/badges.png)
+
+# Results 👏
+
+* Forgetting to run tests is no excuse anymore
+* You automatically get notified when a test fails (via email)
+* You can always show QA that your code is X% covered by tests
 
 # Want to learn more?
 
