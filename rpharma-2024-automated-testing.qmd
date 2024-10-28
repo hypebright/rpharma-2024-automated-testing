@@ -30,7 +30,7 @@ Ready for a 10-minute crash course on automated testing with GitHub Actions?! �
 
 # How would you do it?
 
-You have developed an R package and you want to test it. You would typically:
+For an R package, you would typically:
 
 1. Write tests
 2. Run tests with `devtools::test()` or `devtools::check()` or `testthat::test_check()`
@@ -41,7 +41,7 @@ You have developed an R package and you want to test it. You would typically:
 
 # How would you do it?
 
-You have developed an Shiny app and you want to test it. You would typically:
+For a Shiny app, you would typically:
 
 1. Manually test the app
 2. Fix bugs
@@ -51,10 +51,6 @@ You have developed an Shiny app and you want to test it. You would typically:
 
 # Work smarter, not harder!
 
-Writing tests is just the first step. You need to automate the testing process to ensure that tests are run every time you push changes. 
-
-<br>
-
 Write tests once, enjoy them forever! 🧡
 
 # What do you need?
@@ -63,8 +59,11 @@ Write tests once, enjoy them forever! 🧡
 * `testthat`
 * `usethis` to make your life easier
 * GitHub Actions for automating the testing process
+
+Optionally:
+
 * `shinytest2` in the case of a Shiny app
-* `covr` optionally, for checking test coverage
+* `covr` for checking test coverage
 
 # R package
 
@@ -229,10 +228,7 @@ With `covr`, you can check the test coverage of your package. You can use the `c
 
 # covr
 
-While 100% test coverage is nice in theory, it's not going to be reality for most packages. However, you can use the test coverage report to identify areas where you can improve your tests.
-
 ![Well look at that!](images/package_coverage.png)
-
 
 # Another additional step?!
 
@@ -417,7 +413,11 @@ And it can be a pass, or a fail... 🚦
 
 # Showing off your efforts 💪
 
-Badges. Show them off in your README. Bonus: remember the `badge = TRUE` argument in the `usethis::use_github_action()` function? This will automatically add the badge to your README!
+Badges. Show them off in your README. 
+
+<br>
+
+Bonus: remember the `badge = TRUE` argument in the `usethis::use_github_action()` function? This will automatically add the badge to your README!
 
 # Showing off your efforts 💪
 
@@ -434,3 +434,5 @@ Badges. Show them off in your README. Bonus: remember the `badge = TRUE` argumen
 * Check out GitHub for all the relevant files to get you started
 * Open a discussion or issue on GitHub if you have any questions that weren't answered during this crash course
 * Reach out to me on LinkedIn: [Veerle Eeftink - van Leemput](https://www.linkedin.com/in/veerlevanleemput/) (and while you there, give me a follow for weekly R and Shiny content! 🌟)
+
+# Enjoy the rest of the conference! 🎉

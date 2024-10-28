@@ -426,7 +426,7 @@ Veerle Eeftink - van Leemput
 
 <section id="how-would-you-do-it" class="title-slide slide level1 center">
 <h1>How would you do it?</h1>
-<p>You have developed an R package and you want to test it. You would typically:</p>
+<p>For an R package, you would typically:</p>
 <ol type="1">
 <li>Write tests</li>
 <li>Run tests with <code>devtools::test()</code> or <code>devtools::check()</code> or <code>testthat::test_check()</code></li>
@@ -438,7 +438,7 @@ Veerle Eeftink - van Leemput
 
 <section id="how-would-you-do-it-1" class="title-slide slide level1 center">
 <h1>How would you do it?</h1>
-<p>You have developed an Shiny app and you want to test it. You would typically:</p>
+<p>For a Shiny app, you would typically:</p>
 <ol type="1">
 <li>Manually test the app</li>
 <li>Fix bugs</li>
@@ -449,8 +449,6 @@ Veerle Eeftink - van Leemput
 
 <section id="work-smarter-not-harder" class="title-slide slide level1 center">
 <h1>Work smarter, not harder!</h1>
-<p>Writing tests is just the first step. You need to automate the testing process to ensure that tests are run every time you push changes.</p>
-<p><br></p>
 <p>Write tests once, enjoy them forever! 🧡</p>
 </section>
 
@@ -461,8 +459,11 @@ Veerle Eeftink - van Leemput
 <li><code>testthat</code></li>
 <li><code>usethis</code> to make your life easier</li>
 <li>GitHub Actions for automating the testing process</li>
+</ul>
+<p>Optionally:</p>
+<ul>
 <li><code>shinytest2</code> in the case of a Shiny app</li>
-<li><code>covr</code> optionally, for checking test coverage</li>
+<li><code>covr</code> for checking test coverage</li>
 </ul>
 </section>
 
@@ -621,7 +622,6 @@ Veerle Eeftink - van Leemput
 
 <section id="covr-1" class="title-slide slide level1 center">
 <h1>covr</h1>
-<p>While 100% test coverage is nice in theory, it’s not going to be reality for most packages. However, you can use the test coverage report to identify areas where you can improve your tests.</p>
 
 <img data-src="images/package_coverage.png" class="r-stretch quarto-figure-center"><p class="caption">Well look at that!</p></section>
 
@@ -812,7 +812,9 @@ Veerle Eeftink - van Leemput
 
 <section id="showing-off-your-efforts" class="title-slide slide level1 center">
 <h1>Showing off your efforts 💪</h1>
-<p>Badges. Show them off in your README. Bonus: remember the <code>badge = TRUE</code> argument in the <code>usethis::use_github_action()</code> function? This will automatically add the badge to your README!</p>
+<p>Badges. Show them off in your README.</p>
+<p><br></p>
+<p>Bonus: remember the <code>badge = TRUE</code> argument in the <code>usethis::use_github_action()</code> function? This will automatically add the badge to your README!</p>
 </section>
 
 <section id="showing-off-your-efforts-1" class="title-slide slide level1 center">
@@ -836,6 +838,10 @@ Veerle Eeftink - van Leemput
 <li>Open a discussion or issue on GitHub if you have any questions that weren’t answered during this crash course</li>
 <li>Reach out to me on LinkedIn: <a href="https://www.linkedin.com/in/veerlevanleemput/">Veerle Eeftink - van Leemput</a> (and while you there, give me a follow for weekly R and Shiny content! 🌟)</li>
 </ul>
+</section>
+
+<section id="enjoy-the-rest-of-the-conference" class="title-slide slide level1 center">
+<h1>Enjoy the rest of the conference! 🎉</h1>
 
 <div class="quarto-auto-generated-content">
 <p><img src="images/logo.png" class="slide-logo"></p>
